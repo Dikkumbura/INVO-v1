@@ -1,0 +1,45 @@
+{
+  "name": "inov-underwriting",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "dependencies": {
+    "@headlessui/react": "^1.7.17",
+    "@heroicons/react": "^2.0.18",
+    "@tailwindcss/forms": "^0.5.7",
+    "@types/node": "^20.10.5",
+    "autoprefixer": "^10.4.16",
+    "clsx": "^2.0.0",
+    "date-fns": "^2.30.0",
+    "firebase": "^10.14.1",
+    "postcss": "^8.4.31",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-native-web": "^0.19.9",
+    "react-router-dom": "^6.16.0",
+    "tailwindcss": "^3.3.3",
+    "uuid": "^9.0.1",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/react-native": "^0.72.3",
+    "@types/uuid": "^9.0.7",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "npx vite build",
+    "preview": "npx vite preview",
+    "typecheck": "tsc"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}

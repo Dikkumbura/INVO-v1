@@ -1,0 +1,181 @@
+import React, { useState } from 'react';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { UserIcon, ArrowLeftOnRectangleIcon, CogIcon, BriefcaseIcon } from '@heroicons/react/24/outline';
+import clsx from 'clsx';
+
+interface UserProfileProps {
+  className?: string;
+}
+
+// Helper function to format role and specialty names
+const formatRoleType = (roleId: string): string => {
+  const roles: Record<string, string> = {
+    'agent': 'Insurance Agent',
+    'underwriter': 'Underwriter',
+    'broker': 'Insurance Broker',
+    'mgaStaff': 'MGA Staff',
+    'other': 'Insurance Professional'
+  };
+  return roles[roleId] || 'Insurance Professional';
+};
+
+const formatSpecialty = (specialtyId: string): string => {
+  const specialties: Record<string, string> = {
+    'commercial': 'Commercial Insurance',
+    'personal': 'Personal Insurance',
+    'liability': 'Professional Liability',
+    'property': 'Property & Casualty',
+    'life': 'Life & Health',
+    'cyber': 'Cyber Insurance',
+    'specialty': 'Specialty Lines',
+    'transportation': 'Transportation',
+    'workers': 'Workers Compensation',
+    'multiple': 'Multiple Specialties'
+  };
+  return specialties[specialtyId] || '';
+};
+
+const UserProfile: React.FC<UserProfileProps> = ({ className }) => {
+  const { currentUser, userProfileData, logOut } = useAuth();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // Function to get just the first name
+  const getFirstName = (displayName: string | null): string => {
+    if (!displayName) return 'User';
+    return displayName.split(' ')[0]; // Extract first name by splitting on space
+  };
+
+  const handleLogout = async () => {
+    try {
+      await logOut();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out:', error);
+    }
+  };
+
+  if (!currentUser) {
+    return (
+      <button
+        onClick={() => navigate('/login')}
+        className={clsx(
+          "inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm",
+          className
+        )}
+      >
+        Sign in
+      </button>
+    );
+  }
+
+  // Get first name only
+  const firstName = getFirstName(currentUser.displayName);
+
+  return (
+    <div className={clsx("relative flex items-center space-x-3", className)}>
+      {/* Main visible component in the navigation - now more distinctive */}
+      <div className="hidden md:flex items-center">
+        <div className="flex items-center rounded-full bg-gradient-to-r from-purple-500 to-indigo-600 px-4 py-2 shadow-md transition-all duration-200 hover:shadow-lg border-2 border-white">
+          <span className="text-sm font-bold text-white">Hi, {firstName}!</span>
+        </div>
+      </div>
+      
+      {/* User avatar/profile picture that opens the menu */}
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="h-10 w-10 rounded-full bg-gradient-to-r from-indigo-600 to-blue-500 flex items-center justify-center text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-accent hover:opacity-90 transition-all duration-200 shadow-sm hover:shadow-md transform hover:scale-105"
+        aria-expanded={isMenuOpen}
+        aria-haspopup="true"
+      >
+        {currentUser.photoURL ? (
+          <img 
+            src={currentUser.photoURL} 
+            alt={firstName} 
+            className="h-10 w-10 rounded-full object-cover"
+          />
+        ) : (
+          <span className="text-sm font-medium">
+            {firstName.charAt(0).toUpperCase()}
+          </span>
+        )}
+        {/* Online indicator dot */}
+        <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-green-400 border-2 border-white"></span>
+      </button>
+
+      {isMenuOpen && (
+        <>
+          {/* Backdrop for mobile */}
+          <div 
+            className="fixed inset-0 z-10 md:hidden"
+            onClick={() => setIsMenuOpen(false)}
+          />
+          
+          <div className="absolute right-0 mt-2 w-64 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-20 top-full">
+            <div className="py-1" role="menu" aria-orientation="vertical">
+              <div className="px-4 py-3 border-b bg-gradient-to-r from-indigo-50 to-blue-50">
+                <p className="text-sm font-medium text-gray-900">{firstName}</p>
+                <p className="text-xs text-gray-500 truncate">{currentUser.email}</p>
+                
+                {/* Display user role and specialty if available */}
+                {userProfileData && userProfileData.roleType && (
+                  <div className="mt-2 flex items-center text-xs text-blue-600">
+                    <BriefcaseIcon className="mr-1 h-3 w-3" aria-hidden="true" />
+                    <span>{formatRoleType(userProfileData.roleType)}</span>
+                  </div>
+                )}
+                
+                {userProfileData && userProfileData.specialty && (
+                  <p className="text-xs text-gray-500 mt-1">
+                    {formatSpecialty(userProfileData.specialty)}
+                  </p>
+                )}
+              </div>
+              
+              <a
+                href="/profile"
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                <UserIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                Your Profile
+              </a>
+              
+              <a
+                href="/settings"
+                className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                role="menuitem"
+              >
+                <CogIcon className="mr-3 h-5 w-5 text-gray-400" aria-hidden="true" />
+                Settings
+              </a>
+              
+              <div className="px-4 py-2 border-t">
+                <button
+                  onClick={handleLogout}
+                  className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm"
+                  role="menuitem"
+                >
+                  <ArrowLeftOnRectangleIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+                  Sign out
+                </button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default UserProfile;
+
+// Add this CSS to your global styles or component
+// @keyframes fadeIn {
+//   from { opacity: 0; }
+//   to { opacity: 1; }
+// }
+// .animate-fade-in {
+//   animation: fadeIn 0.3s ease-in;
+// }
