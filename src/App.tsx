@@ -27,6 +27,9 @@ function App() {
   
   // Check if we're on the login page
   const isLoginPage = location.pathname === '/login';
+  
+  // TEMPORARILY BYPASS AUTHENTICATION - assume user is always logged in
+  const tempCurrentUser = true;
 
   // Check if device is mobile
   useEffect(() => {
@@ -82,7 +85,7 @@ function App() {
                 <div className="flex h-16 justify-between">
                   <div className="flex flex-1">
                     <div className="flex flex-shrink-0 items-center">
-                      <Link to={currentUser ? "/dashboard" : "/login"} className="h-full flex items-center">
+                      <Link to={tempCurrentUser ? "/dashboard" : "/login"} className="h-full flex items-center">
                         <div className="w-36 overflow-hidden">
                           <img 
                             src="/images/logo.jpg" 
@@ -93,7 +96,7 @@ function App() {
                       </Link>
                     </div>
                     {/* Only show navigation links when logged in and not on login page */}
-                    {currentUser && !isLoginPage && (
+                    {tempCurrentUser && !isLoginPage && (
                       <div className="hidden sm:ml-6 sm:flex flex-1 justify-around">
                         {navigation.map((item) => (
                           <Link
@@ -108,7 +111,7 @@ function App() {
                     )}
                   </div>
                   <div className="flex items-center space-x-4">
-                    {currentUser && !isLoginPage && (
+                    {tempCurrentUser && !isLoginPage && (
                       <button
                         onClick={handleAssistantToggle}
                         className="group relative flex items-center justify-center px-3 py-2 rounded-full text-blue-600 bg-blue-100 hover:bg-blue-200 transition-colors duration-200 animate-pulse hover:animate-none shadow-md"
@@ -121,7 +124,7 @@ function App() {
                         </span>
                       </button>
                     )}
-                    {currentUser ? (
+                    {tempCurrentUser ? (
                       <UserProfile />
                     ) : (
                       <Link to="/login" className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200 shadow-sm">
@@ -130,7 +133,7 @@ function App() {
                     )}
                   </div>
                   {/* Only show mobile menu button when logged in and not on login page */}
-                  {currentUser && !isLoginPage && (
+                  {tempCurrentUser && !isLoginPage && (
                     <div className="-mr-2 flex items-center sm:hidden">
                       <Disclosure.Button 
                         className="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-accent"
@@ -150,7 +153,7 @@ function App() {
 
               <Disclosure.Panel className="sm:hidden">
                 {/* Only show navigation items when logged in */}
-                {currentUser && (
+                {tempCurrentUser && (
                   <div className="space-y-1 pb-3 pt-2">
                     {navigation.map((item) => (
                       <Disclosure.Button
@@ -178,7 +181,7 @@ function App() {
                   </div>
                 )}
                 
-                {!currentUser && (
+                {!tempCurrentUser && (
                   <div className="space-y-1 pb-3 pt-2">
                     <Disclosure.Button
                       as={Link}
@@ -195,27 +198,17 @@ function App() {
                 )}
                 
                 {/* User profile section in mobile menu */}
-                {currentUser && (
+                {tempCurrentUser && (
                   <div className="border-t border-gray-200 pt-4 pb-3">
                     <div className="flex items-center px-4">
                       <div className="flex-shrink-0">
-                        <div className="h-10 w-10 rounded-full bg-accent flex items-center justify-center text-white">
-                          {currentUser.photoURL ? (
-                            <img 
-                              src={currentUser.photoURL} 
-                              alt={currentUser.displayName || 'User'} 
-                              className="h-10 w-10 rounded-full object-cover"
-                            />
-                          ) : (
-                            <span className="text-lg font-medium">
-                              {currentUser.displayName ? currentUser.displayName.charAt(0).toUpperCase() : 'U'}
-                            </span>
-                          )}
+                        <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white">
+                          <span className="text-lg font-medium">D</span>
                         </div>
                       </div>
                       <div className="ml-3">
-                        <div className="text-base font-medium text-gray-800">{currentUser.displayName || 'User'}</div>
-                        <div className="text-sm font-medium text-gray-500">{currentUser.email}</div>
+                        <div className="text-base font-medium text-gray-800">Demo User</div>
+                        <div className="text-sm font-medium text-gray-500">demo@invo.com</div>
                       </div>
                     </div>
                     <div className="mt-3 space-y-1">

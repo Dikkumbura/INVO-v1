@@ -56,6 +56,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [userProfileData, setUserProfileData] = useState<UserProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   
+  // TEMPORARY: Mock user for bypassing authentication
+  const mockUser = {
+    uid: 'temp-user-123',
+    email: 'demo@invo.com',
+    displayName: 'Demo User',
+    photoURL: null,
+    emailVerified: true,
+    isAnonymous: false,
+    metadata: {
+      creationTime: new Date().toISOString(),
+      lastSignInTime: new Date().toISOString(),
+    },
+    providerData: [],
+    refreshToken: '',
+    tenantId: null,
+    delete: async () => {},
+    getIdToken: async () => 'mock-token',
+    getIdTokenResult: async () => ({} as any),
+    reload: async () => {},
+    toJSON: () => ({}),
+  } as User;
+  
+  const mockProfileData = {
+    roleType: 'underwriter',
+    specialty: 'commercial_auto',
+    experienceLevel: 'senior',
+    companyName: 'INVO Demo'
+  };
+  
   // Initialize Firestore
   const db = getFirestore();
   
@@ -338,6 +367,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Listen for auth state changes
   useEffect(() => {
+    // TEMPORARY: Bypass Firebase auth and use mock user
+    const bypassAuth = true;
+    
+    if (bypassAuth) {
+      // Set mock user and profile data immediately
+      setCurrentUser(mockUser);
+      setUserProfileData(mockProfileData);
+      setLoading(false);
+      return;
+    }
+    
+    // Original Firebase auth logic (commented out for bypass)
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       
@@ -396,7 +437,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     return unsubscribe;
-  }, []);
+  }, [mockUser, mockProfileData]);
 
   const value = {
     currentUser,

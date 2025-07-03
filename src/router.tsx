@@ -21,21 +21,27 @@ import PolicyPayment from './components/PolicyPayment';
 import PolicySubmissionEnhanced from './components/PolicySubmissionEnhanced';
 import FileClaimPage from './components/FileClaimPage';
 
-// Protected route component
+// Protected route component - TEMPORARILY DISABLED FOR EASE OF USE
 const ProtectedRoute = ({ element }: { element: React.ReactNode }) => {
-  const { currentUser, loading } = useAuth();
+  // const { currentUser, loading } = useAuth();
 
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+  // if (loading) {
+  //   return <div>Loading...</div>;
+  // }
 
-  return currentUser ? element : <Navigate to="/login" />;
+  // return currentUser ? element : <Navigate to="/login" />;
+  
+  // Temporarily bypass authentication - return element directly
+  return element;
 };
 
-// Default landing route component
+// Default landing route component - TEMPORARILY DISABLED FOR EASE OF USE
 const DefaultRoute = () => {
-  const { currentUser } = useAuth();
-  return currentUser ? <Navigate to="/dashboard" /> : <Navigate to="/login" />;
+  // const { currentUser } = useAuth();
+  // return currentUser ? <Navigate to="/dashboard" /> : <Navigate to="/login" />;
+  
+  // Temporarily go directly to dashboard
+  return <Navigate to="/dashboard" />;
 };
 
 // Wrap child elements with ErrorBoundary
